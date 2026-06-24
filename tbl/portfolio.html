@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kachi Ezibe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#08080a;
+  --dark:#0e0e12;
+  --card:#141418;
+  --border:rgba(255,255,255,0.07);
+  --gold:#c9a84c;
+  --gold2:#e8c97a;
+  --white:#f0ede8;
+  --muted:#6b6b78;
+  --text:#9b9aa6;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6;cursor:none}
+
+/* GRAIN */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.6}
+
+/* CURSOR */
+.cur{width:6px;height:6px;background:var(--gold);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+.cur-ring{width:28px;height:28px;border:1px solid rgba(201,168,76,.3);border-radius:50%;position:fixed;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:all .08s linear}
+.cur.big{width:14px;height:14px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:0 6%;display:flex;justify-content:space-between;align-items:center;height:68px;mix-blend-mode:normal}
+nav::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,8,10,.95),transparent);pointer-events:none;z-index:-1}
+.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;letter-spacing:.04em;color:var(--white);text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:color .25s}
+.nav-links a:hover{color:var(--gold)}
+.ham{display:none;background:none;border:none;cursor:none;flex-direction:column;gap:5px;padding:4px}
+.ham span{width:22px;height:1.5px;background:var(--white);display:block;transition:all .3s}
+
+/* MOBILE MENU */
+.mob{display:none;position:fixed;inset:0;background:var(--black);z-index:490;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.mob.on{display:flex}
+.mob a{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--white);text-decoration:none;transition:color .25s}
+.mob a:hover{color:var(--gold)}
+
+/* HERO */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 6% 10vh;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,8,10,.5) 0%,rgba(8,8,10,.2) 40%,rgba(8,8,10,.75) 100%);pointer-events:none;z-index:1}
+.hero-bg,.hero-eyebrow,.hero h1,.hero-sub,.hero-bottom,.hero-num{position:relative;z-index:2}
+
+/* BG elements */
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.hero-line{position:absolute;right:6%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 0%,rgba(201,168,76,.15) 30%,rgba(201,168,76,.08) 70%,transparent 100%)}
+.hero-line2{position:absolute;right:calc(6% + 48px);top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 10%,rgba(255,255,255,.03) 50%,transparent 90%)}
+.hero-orb{position:absolute;top:-20%;right:-10%;width:700px;height:700px;background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 65%);pointer-events:none}
+.hero-orb2{position:absolute;bottom:-30%;left:-5%;width:500px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.04) 0%,transparent 65%);pointer-events:none}
+
+/* Hero text */
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:up .9s .2s forwards}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(64px,11vw,148px);font-weight:900;line-height:.9;letter-spacing:-2px;margin-bottom:36px;opacity:0;animation:up .9s .4s forwards}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:clamp(15px,1.5vw,17px);color:var(--text);max-width:480px;line-height:1.8;margin-bottom:52px;font-weight:300;opacity:0;animation:up .9s .6s forwards}
+.hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;opacity:0;animation:up .9s .8s forwards}
+.hero-cta{display:inline-flex;align-items:center;gap:12px;color:var(--white);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--gold);padding-bottom:6px;transition:color .25s,gap .25s}
+.hero-cta:hover{color:var(--gold);gap:20px}
+.hero-scroll{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.scroll-line{width:40px;height:1px;background:var(--muted)}
+
+/* NUMBER */
+.hero-num{position:absolute;right:6%;top:50%;transform:translateY(-50%) rotate(90deg);font-family:'Playfair Display',serif;font-size:clamp(80px,12vw,160px);font-weight:900;color:rgba(255,255,255,.02);letter-spacing:-4px;pointer-events:none;user-select:none;white-space:nowrap}
+
+@keyframes up{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:0 6%}
+
+/* SECTION */
+section{padding:clamp(80px,12vw,140px) 6%}
+.tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.tag::before{content:'';width:24px;height:1px;background:var(--gold)}
+.stitle{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,60px);font-weight:900;line-height:.95;letter-spacing:-1px;margin-bottom:24px}
+.ssub{font-size:15px;color:var(--text);line-height:1.85;font-weight:300;max-width:560px}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.rv.vis{opacity:1;transform:none}
+.rv2{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
+.rv2.vis{opacity:1;transform:none}
+
+/* PHOTO HERO */
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%;opacity:.5;mask-image:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.9) 100%);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.9) 100%);pointer-events:none}
+@media(max-width:600px){.hero-photo{opacity:.3}}
+
+/* ABOUT PHOTO */
+.about-photo-wrap{position:relative;align-self:start}
+.about-photo{width:100%;height:580px;object-fit:cover;object-position:top center;display:block;filter:grayscale(15%)}
+.about-photo-frame{position:absolute;inset:0;border:1px solid rgba(201,168,76,.15);pointer-events:none}
+.about-photo-frame::before{content:'';position:absolute;top:-8px;left:-8px;width:40px;height:40px;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
+.about-photo-frame::after{content:'';position:absolute;bottom:-8px;right:-8px;width:40px;height:40px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold)}
+.about-photo-label{position:absolute;bottom:16px;left:16px;background:rgba(8,8,10,.85);padding:8px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border-left:2px solid var(--gold)}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,8vw,100px);align-items:start;margin-top:64px}
+.about-text p{font-size:clamp(15px,1.5vw,17px);color:var(--text);line-height:1.95;font-weight:300;margin-bottom:24px}
+.about-text p strong{color:var(--white);font-weight:500}
+.about-text p em{color:var(--gold);font-style:italic}
+.about-stats{display:flex;flex-direction:column;gap:1px;background:var(--border)}
+.stat{background:var(--dark);padding:28px 32px;display:flex;align-items:baseline;justify-content:space-between;gap:20px;transition:background .3s}
+.stat:hover{background:var(--card)}
+.stat-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--gold);line-height:1}
+.stat-label{font-size:12px;color:var(--muted);letter-spacing:.06em;text-align:right;line-height:1.5;max-width:140px}
+
+/* COMPANIES */
+.companies{background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.co-intro{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:72px}
+.co-cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.co-card{background:var(--black);padding:clamp(32px,4vw,56px);position:relative;overflow:hidden;transition:background .4s;text-decoration:none;color:inherit;display:block}
+.co-card:hover{background:var(--card)}
+.co-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transition:opacity .4s;opacity:0}
+.co-card:nth-child(1)::before{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.co-card:nth-child(2)::before{background:linear-gradient(90deg,#00ffaa,#00c8ff)}
+.co-hover::before{opacity:1}
+.co-card:hover::before{opacity:1}
+.co-num{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;color:var(--muted);margin-bottom:24px;text-transform:uppercase}
+.co-name{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,44px);font-weight:900;line-height:.95;letter-spacing:-1px;margin-bottom:16px}
+.co-card:nth-child(1) .co-name{color:var(--gold)}
+.co-card:nth-child(2) .co-name em{font-style:normal;color:#00ffaa}
+.co-type{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.co-desc{font-size:14px;color:var(--text);line-height:1.8;font-weight:300;margin-bottom:32px;max-width:380px}
+.co-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px}
+.co-tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);color:var(--muted);border-radius:2px}
+.co-card:nth-child(1) .co-tag:first-child{border-color:rgba(201,168,76,.3);color:var(--gold)}
+.co-card:nth-child(2) .co-tag:first-child{border-color:rgba(0,255,170,.2);color:#00ffaa}
+.co-arrow{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .3s,gap .3s}
+.co-card:hover .co-arrow{color:var(--white);gap:18px}
+.co-card:nth-child(1):hover .co-arrow{color:var(--gold)}
+.co-card:nth-child(2):hover .co-arrow{color:#00ffaa}
+.co-bg-num{position:absolute;bottom:-20px;right:20px;font-family:'Playfair Display',serif;font-size:140px;font-weight:900;color:rgba(255,255,255,.02);line-height:1;pointer-events:none;user-select:none;transition:color .4s}
+.co-card:hover .co-bg-num{color:rgba(255,255,255,.03)}
+
+/* TICKER */
+.ticker{padding:18px 0;background:var(--black);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
+.tick-track{display:flex;width:max-content;animation:tick 22s linear infinite}
+.tick-track:hover{animation-play-state:paused}
+.tick-item{display:flex;align-items:center;gap:14px;padding:0 32px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.tick-item em{color:var(--gold);font-style:normal;font-size:14px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* STORY */
+.story-grid{display:grid;grid-template-columns:1fr 2fr;gap:clamp(40px,8vw,100px);margin-top:64px}
+.story-side{position:sticky;top:100px;height:fit-content}
+.story-year{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;margin-bottom:16px}
+.story-caption{font-size:12px;color:var(--muted);letter-spacing:.08em;line-height:1.7}
+.story-items{display:flex;flex-direction:column;gap:0}
+.story-item{padding:clamp(24px,3vw,36px) 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:100px 1fr;gap:24px;transition:padding .3s}
+.story-item:hover{padding-left:16px}
+.story-item:first-child{border-top:1px solid var(--border)}
+.story-item:hover .s-yr{color:var(--gold)}
+.s-yr{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--muted);padding-top:4px;transition:color .3s}
+.s-content h4{font-size:18px;font-weight:500;margin-bottom:8px}
+.s-content p{font-size:13px;color:var(--muted);line-height:1.75;font-weight:300}
+
+@media(max-width:700px){
+  .story-item{grid-template-columns:1fr}
+  .story-item:nth-child(even){direction:ltr}
+  .s-img{height:200px}
+}
+
+/* CONTACT */
+.contact{background:var(--dark);border-top:1px solid var(--border)}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,8vw,100px);align-items:start;margin-top:64px}
+.contact-links{display:flex;flex-direction:column;gap:1px;background:var(--border);margin-top:40px}
+.clink{background:var(--black);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--text);font-size:13px;letter-spacing:.06em;transition:all .3s}
+.clink:hover{background:var(--card);color:var(--white);padding-left:32px}
+.clink-label{display:flex;align-items:center;gap:12px}
+.clink-icon{font-size:16px;width:20px;text-align:center}
+.clink-arr{opacity:0;transition:opacity .3s}
+.clink:hover .clink-arr{opacity:1;color:var(--gold)}
+
+.contact-form{display:flex;flex-direction:column;gap:0;background:var(--border)}
+.form-field{background:var(--black);padding:18px 22px;border:none;outline:none;color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;width:100%;resize:none;transition:background .3s;border-bottom:1px solid var(--border)}
+.form-field:focus{background:var(--card)}
+.form-field::placeholder{color:var(--muted)}
+.form-field:last-of-type{border-bottom:none;min-height:120px}
+.form-submit{background:var(--gold);color:var(--black);border:none;padding:18px 32px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:background .25s;align-self:flex-start;margin-top:1px;width:100%}
+.form-submit:hover{background:var(--gold2)}
+
+/* FOOTER */
+footer{padding:clamp(24px,4vw,40px) 6%;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.f-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:.04em}
+.f-logo span{color:var(--gold)}
+.f-copy{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.f-links{display:flex;gap:24px;list-style:none}
+.f-links a{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .25s}
+.f-links a:hover{color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .about-grid,.co-intro,.story-grid,.contact-inner{grid-template-columns:1fr}
+  .co-cards{grid-template-columns:1fr}
+  .story-side{position:relative;top:auto}
+  .ham{display:flex}
+  .nav-links{display:none}
+  .about-photo{border-radius:12px;height:420px}
+  .about-photo-wrap{max-width:480px;margin:0 auto}
+}
+@media(max-width:600px){
+  .hero h1{font-size:52px;letter-spacing:-1px}
+  .hero-bottom{flex-direction:column;align-items:flex-start;gap:24px}
+  .stat{flex-direction:column;gap:4px}
+  .stat-label{text-align:left}
+  .story-item{grid-template-columns:1fr;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Kachi <span>Ezibe</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#companies">Companies</a></li>
+    <li><a href="#story">Story</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="ham" id="ham" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mob" id="mob">
+  <a href="#about" class="mob-link">About</a>
+  <a href="#companies" class="mob-link">Companies</a>
+  <a href="#story" class="mob-link">Story</a>
+  <a href="#contact" class="mob-link">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-line"></div>
+    <div class="hero-line2"></div>
+    <div class="hero-orb"></div>
+    <div class="hero-orb2"></div>
+  </div>
+  <div class="hero-num">KE</div>
+  <img src="img/kachi-hero.jpg" alt="Kachi Ezibe" class="hero-photo">
+
+  <p class="hero-eyebrow">Entrepreneur · Builder · Lagos & Dallas</p>
+  <h1>Kachi<br><em>Ezibe.</em></h1>
+  <p class="hero-sub">I build AI-powered systems and digital products that help businesses stop losing revenue and start scaling without hiring more people.</p>
+  <div class="hero-bottom">
+    <a href="#companies" class="hero-cta">View my companies <span>→</span></a>
+    <div class="hero-scroll"><div class="scroll-line"></div><span>Scroll</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tick-track">
+    <div class="tick-item"><em>✦</em> AI Automation</div>
+    <div class="tick-item"><em>✦</em> Real Estate Tech</div>
+    <div class="tick-item"><em>✦</em> Web Design</div>
+    <div class="tick-item"><em>✦</em> HVAC SaaS</div>
+    <div class="tick-item"><em>✦</em> Lead Systems</div>
+    <div class="tick-item"><em>✦</em> Revenue Operations</div>
+    <div class="tick-item"><em>✦</em> Make.com Automation</div>
+    <div class="tick-item"><em>✦</em> Digital Presence</div>
+    <div class="tick-item"><em>✦</em> AI Automation</div>
+    <div class="tick-item"><em>✦</em> Real Estate Tech</div>
+    <div class="tick-item"><em>✦</em> Web Design</div>
+    <div class="tick-item"><em>✦</em> HVAC SaaS</div>
+    <div class="tick-item"><em>✦</em> Lead Systems</div>
+    <div class="tick-item"><em>✦</em> Revenue Operations</div>
+    <div class="tick-item"><em>✦</em> Make.com Automation</div>
+    <div class="tick-item"><em>✦</em> Digital Presence</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="tag rv">Who I am</div>
+  <div class="about-grid">
+    <div class="about-photo-wrap rv2">
+      <img src="img/kachi-headshot.jpg" alt="Kachi Ezibe" class="about-photo">
+      <div class="about-photo-frame"></div>
+      <div class="about-photo-label">Kachi Ezibe &mdash; Founder</div>
+    </div>
+    <div class="rv">
+      <div class="about-text">
+        <p>I'm Kachi — a <strong>17-year-old entrepreneur</strong> building AI automation systems and digital products from the ground up. I started with a simple observation: <em>small businesses lose thousands every month</em> not because they're bad at what they do, but because their systems are broken.</p>
+        <p>My uncle's restaurant was losing customers because people couldn't find him online. I built him a website in two weeks. His bookings doubled. That was the beginning.</p>
+        <p>Now I run two companies. One builds <strong>websites and digital presence</strong> for small businesses. The other builds <strong>AI automation systems</strong> for real estate brokerages — systems that respond to leads in seconds, qualify prospects automatically, and close deals while agents sleep.</p>
+        <p>I'm not interested in building one thing. I'm interested in building <em>systems that compound</em>.</p>
+      </div>
+      <div class="about-stats" style="margin-top:40px">
+        <div class="stat">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Active companies across two industries</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">4s</div>
+          <div class="stat-label">Average AI lead response time</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">78%</div>
+          <div class="stat-label">Of leads go to the first agent who responds</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">$0</div>
+          <div class="stat-label">Outside funding — built from the ground up</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPANIES -->
+<section class="companies" id="companies">
+  <div class="co-intro">
+    <div class="rv2">
+      <div class="tag">Companies</div>
+      <h2 class="stitle">Two bets.<br>Two markets.</h2>
+    </div>
+    <p class="ssub rv">Each company solves a different problem for a different client. Both use AI. Both are built to scale without scaling headcount.</p>
+  </div>
+
+  <div class="co-cards rv">
+    <!-- Company 1: Folio Studio -->
+    <div class="co-card">
+      <div class="co-num">01 / 02</div>
+      <div class="co-name">Folio<br>Studio</div>
+      <div class="co-type">Web Design & Digital Presence</div>
+      <p class="co-desc">Custom websites, brand identity, and business automation for small businesses who want the same online presence as big companies — without the big company price tag or the 6-month timeline.</p>
+      <div class="co-tags">
+        <span class="co-tag">Web Design</span>
+        <span class="co-tag">Branding</span>
+        <span class="co-tag">Automation</span>
+        <span class="co-tag">2–4 Week Delivery</span>
+      </div>
+      <div class="co-arrow">View company <span>→</span></div>
+      <div class="co-bg-num">FS</div>
+    </div>
+
+    <!-- Company 2: PresenceIX -->
+    <div class="co-card">
+      <div class="co-num">02 / 02</div>
+      <div class="co-name">Presence<em>IX</em></div>
+      <div class="co-type">AI Automation Agency — Real Estate</div>
+      <p class="co-desc">AI-powered lead follow-up, qualification, and transaction automation for real estate brokerages. We build the system. Your agents close more deals with less admin. Leads responded to in under 5 seconds.</p>
+      <div class="co-tags">
+        <span class="co-tag">AI Automation</span>
+        <span class="co-tag">Real Estate</span>
+        <span class="co-tag">Lead Systems</span>
+        <span class="co-tag">RevOps</span>
+      </div>
+      <div class="co-arrow">View company <span>→</span></div>
+      <div class="co-bg-num">IX</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- STORY -->
+<section id="story">
+  <div class="tag rv">The story</div>
+  <h2 class="stitle rv">How it<br><em style="font-style:italic;color:var(--gold)">started.</em></h2>
+
+  <div class="story-grid">
+    <div class="story-side rv2">
+      <div class="story-year">KE</div>
+      <p class="story-caption">Building businesses<br>from Lagos to Dallas.<br>Started with a website.<br>Won't stop at two companies.</p>
+    </div>
+
+    <div class="story-items rv">
+      <div class="story-item">
+        <div class="s-yr">2023</div>
+        <div class="s-content">
+          <h4>The First Website</h4>
+          <p>Built my uncle's restaurant website in two weeks. His bookings doubled. Realised small businesses don't have tech problems — they have business problems that technology can solve. PresenceIX was born.</p>
+        </div>
+      </div>
+      <div class="story-item">
+        <div class="s-yr">2024</div>
+        <div class="s-content">
+          <h4>Going Deeper Into AI</h4>
+          <p>Started studying automation — Make.com, n8n, AI APIs. Built my first real estate lead follow-up system. Watched a brokerage go from losing 40% of their leads to responding to every single one in under 5 seconds.</p>
+        </div>
+      </div>
+      <div class="story-item">
+        <div class="s-yr">2024</div>
+        <div class="s-content">
+          <h4>PresenceIX Repositioned</h4>
+          <p>Pivoted the agency from general web design to AI automation exclusively for real estate brokerages. The niche is clear, the problem is expensive, and the ROI is undeniable. Retainers start at $2,000/month.</p>
+        </div>
+      </div>
+      <div class="story-item">
+        <div class="s-yr">2025</div>
+        <div class="s-content">
+          <h4>CallSaver AI Conceptualised</h4>
+          <p>Identified a second market: HVAC companies in Dallas losing $150–300K per year to missed calls. Built the architecture for an AI that responds to missed calls in 60 seconds, qualifies leads, generates quotes, and books appointments automatically.</p>
+        </div>
+      </div>
+      <div class="story-item">
+        <div class="s-yr">2026</div>
+        <div class="s-content">
+          <h4>Folio Studio Launched</h4>
+          <p>Spun out the web design work into its own brand. Folio Studio handles websites, branding, and digital presence for small businesses at transparent pricing. Two companies. Two markets. One operator.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="tag rv">Let's talk</div>
+  <h2 class="stitle rv">Work with<br><em style="font-style:italic;color:var(--gold)">me.</em></h2>
+
+  <div class="contact-inner">
+    <div class="rv2">
+      <p class="ssub" style="margin-bottom:0">Whether you're a real estate brokerage bleeding leads, a small business that needs a website that converts, or an investor who wants to talk — my inbox is open.</p>
+      <div class="contact-links">
+        <a href="mailto:kachiezibe@gmail.com" class="clink">
+          <div class="clink-label"><span class="clink-icon">✉</span> kachiezibe@gmail.com</div>
+          <span class="clink-arr">→</span>
+        </a>
+        <a href="https://wa.me/2349071877767" target="_blank" class="clink">
+          <div class="clink-label"><span class="clink-icon">💬</span> WhatsApp — Fastest response</div>
+          <span class="clink-arr">→</span>
+        </a>
+        <a href="https://calendly.com/kaimaezibe/20min" target="_blank" class="clink">
+          <div class="clink-label"><span class="clink-icon">📅</span> Book a free 20-min call</div>
+          <span class="clink-arr">→</span>
+        </a>
+        <a href="https://www.instagram.com/kachi.builds/" target="_blank" class="clink">
+          <div class="clink-label"><span class="clink-icon">📸</span> @kachi.builds</div>
+          <span class="clink-arr">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="rv">
+      <div class="contact-form">
+        <input class="form-field" type="text" placeholder="Your name" id="fname">
+        <input class="form-field" type="email" placeholder="Email address" id="femail">
+        <input class="form-field" type="text" placeholder="Subject — web design, automation, partnership..." id="fsubj">
+        <textarea class="form-field" placeholder="Tell me what you're building or what problem you need solved..." id="fmsg"></textarea>
+        <button class="form-submit" id="fsend">Send message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">Kachi <span>Ezibe</span></div>
+  <ul class="f-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#companies">Companies</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="f-copy">© 2026 — All rights reserved</div>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.co-card,.stat,.story-item,.clink').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// HAMBURGER
+const ham=document.getElementById('ham'),mob=document.getElementById('mob');
+ham.addEventListener('click',()=>{
+  mob.classList.toggle('on');
+  const s=ham.querySelectorAll('span');
+  if(mob.classList.contains('on')){
+    s[0].style.transform='rotate(45deg) translate(4.5px,4.5px)';
+    s[1].style.opacity='0';
+    s[2].style.transform='rotate(-45deg) translate(4.5px,-4.5px)';
+  } else {
+    s[0].style.transform='';s[1].style.opacity='';s[2].style.transform='';
+  }
+});
+document.querySelectorAll('.mob-link').forEach(l=>l.addEventListener('click',()=>{
+  mob.classList.remove('on');
+  ham.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity=''});
+}));
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting) setTimeout(()=>e.target.classList.add('vis'),i*60);
+  });
+},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv,.rv2').forEach(el=>obs.observe(el));
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();mob.classList.remove('on');t.scrollIntoView({behavior:'smooth'})}
+  });
+});
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').style.borderBottom=window.scrollY>60?'1px solid var(--border)':'none';
+});
+
+// FORM
+document.getElementById('fsend').addEventListener('click',function(){
+  const name=document.getElementById('fname').value;
+  const email=document.getElementById('femail').value;
+  const subj=document.getElementById('fsubj').value;
+  const msg=document.getElementById('fmsg').value;
+  if(!name||!email||!msg){this.textContent='Fill in required fields';setTimeout(()=>this.textContent='Send message →',2000);return}
+  const mailto=`mailto:kachiezibe@gmail.com?subject=${encodeURIComponent(subj||'Portfolio Inquiry from '+name)}&body=${encodeURIComponent('Name: '+name+'\nEmail: '+email+'\n\n'+msg)}`;
+  window.location.href=mailto;
+  this.textContent='Opening email... ✓';
+  setTimeout(()=>this.textContent='Send message →',3000);
+});
+</script>
+</body>
+</html>
