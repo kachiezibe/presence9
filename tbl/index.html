@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PresenceIX — Never Lose Another Lead</title>
+<meta name="description" content="AI automation for real estate brokerages and home service businesses. Respond in under 60 seconds, 24/7.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bk:#07080A;--s1:#0D1117;--s2:#131820;--card:#111620;--nv:#080B11;--gd:#BFA06A;--gd2:#D4B87E;--gdim:rgba(191,160,106,.08);--gdim2:rgba(191,160,106,.04);--wh:#EDE8DF;--wh2:#C8C2B8;--mu:#545460;--bd:#7A7870;--bo:rgba(191,160,106,.14);--b2:rgba(255,255,255,.055);--b3:rgba(255,255,255,.025);--tc:#07080A;--bx:#A04848;--grid:rgba(191,160,106,.026);--sh-lg:0 32px 80px rgba(0,0,0,.6);--sh-md:0 8px 40px rgba(0,0,0,.4);}
+[data-theme="light"]{--bk:#F6F2EB;--s1:#EDE7DD;--s2:#E4DDD2;--card:#E9E3D8;--nv:#FDFAF5;--gd:#8B6518;--gd2:#A07525;--gdim:rgba(139,101,24,.10);--gdim2:rgba(139,101,24,.04);--wh:#1A1714;--wh2:#3A3530;--mu:#847D72;--bd:#5A5550;--bo:rgba(139,101,24,.18);--b2:rgba(0,0,0,.07);--b3:rgba(0,0,0,.03);--tc:#FDFAF5;--bx:#B54040;--grid:rgba(139,101,24,.04);--sh-lg:0 32px 80px rgba(0,0,0,.1);--sh-md:0 8px 40px rgba(0,0,0,.07);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bk);color:var(--wh);font-family:'DM Sans',sans-serif;overflow-x:hidden;transition:background .4s,color .4s;}
+#cur,#ring{position:fixed;pointer-events:none;transform:translate(-50%,-50%);z-index:9999;}
+#cur{width:6px;height:6px;background:var(--gd);border-radius:50%;transition:transform .08s;}
+#ring{width:28px;height:28px;border:1px solid rgba(191,160,106,.28);border-radius:50%;z-index:9998;transition:all .14s ease;}
+@media(hover:none){#cur,#ring{display:none;}}
+nav{position:fixed;inset:0 0 auto;z-index:800;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,64px);gap:16px;transition:background .3s,border-color .3s;}
+nav.stuck{background:color-mix(in srgb,var(--bk) 92%,transparent);backdrop-filter:blur(24px) saturate(160%);border-bottom:1px solid var(--bo);}
+.nl{display:flex;align-items:center;gap:13px;cursor:pointer;flex-shrink:0;}
+.nm{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;letter-spacing:.06em;color:var(--wh);}
+.nm span{color:var(--gd);}
+.nlk{display:flex;gap:clamp(20px,2.5vw,36px);}
+.nk{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--mu);text-transform:uppercase;cursor:pointer;transition:color .2s;white-space:nowrap;}
+.nk:hover{color:var(--gd);}
+.nr{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--bo);background:var(--gdim);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;position:relative;flex-shrink:0;}
+.tbtn:hover{border-color:var(--gd);}
+.tbtn svg{position:absolute;transition:opacity .3s,transform .3s;color:var(--gd);}
+.i-sun{opacity:0;transform:rotate(-90deg) scale(.7);}
+.i-moon{opacity:1;}
+[data-theme="light"] .i-sun{opacity:1;transform:rotate(0) scale(1);}
+[data-theme="light"] .i-moon{opacity:0;transform:rotate(90deg) scale(.7);}
+.ncta{background:var(--gd);color:var(--tc);padding:9px 20px;border-radius:10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:background .2s,transform .15s;white-space:nowrap;}
+.ncta:hover{background:var(--gd2);transform:translateY(-1px);}
+.ham{display:none;flex-direction:column;justify-content:center;width:38px;height:38px;cursor:pointer;border:1px solid var(--bo);border-radius:10px;background:var(--gdim);padding:0 9px;gap:5px;flex-shrink:0;}
+.ham span{display:block;height:1.5px;background:var(--wh2);border-radius:2px;transition:all .35s cubic-bezier(.23,1,.32,1);transform-origin:center;}
+.ham span:nth-child(2){width:70%;}
+.ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);background:var(--gd);}
+.ham.open span:nth-child(2){transform:scaleX(0);opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);background:var(--gd);}
+.mob{position:fixed;inset:0;z-index:790;background:color-mix(in srgb,var(--bk) 97%,transparent);backdrop-filter:blur(32px);display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.mob.open{opacity:1;pointer-events:all;}
+.mob-lk{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,7vw,52px);font-weight:700;color:var(--wh);cursor:pointer;padding:12px 0;border-bottom:1px solid var(--b2);width:78vw;opacity:0;transform:translateY(16px);transition:opacity .4s,transform .4s,color .2s,padding-left .25s;}
+.mob.open .mob-lk{opacity:1;transform:translateY(0);}
+.mob.open .mob-lk:nth-child(1){transition-delay:.04s;}.mob.open .mob-lk:nth-child(2){transition-delay:.09s;}.mob.open .mob-lk:nth-child(3){transition-delay:.14s;}.mob.open .mob-lk:nth-child(4){transition-delay:.19s;}.mob.open .mob-lk:nth-child(5){transition-delay:.24s;}.mob.open .mob-lk:nth-child(6){transition-delay:.29s;}
+.mob-lk:hover{color:var(--gd);padding-left:10px;}
+.mob-lk:last-child{border-bottom:none;font-style:italic;color:var(--gd);}
+.mob-ft{position:absolute;bottom:36px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.2em;text-transform:uppercase;}
+#hero{min-height:100svh;display:flex;align-items:center;padding:clamp(100px,14vh,160px) clamp(24px,5vw,80px) clamp(80px,10vh,120px);position:relative;overflow:hidden;}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 70% at 28% 50%,#000 0%,transparent 68%);}
+.hglow{position:absolute;left:-300px;top:-200px;width:min(1100px,140vw);height:900px;background:radial-gradient(ellipse,rgba(191,160,106,.055) 0%,transparent 58%);pointer-events:none;}
+.hi{position:relative;z-index:2;max-width:860px;}
+.hpill{display:inline-flex;align-items:center;gap:10px;background:var(--gdim);border:1px solid var(--bo);border-radius:100px;padding:6px 16px 6px 10px;margin-bottom:44px;opacity:0;animation:fu .8s .1s forwards;}
+.hdot{width:6px;height:6px;background:var(--gd);border-radius:50%;animation:pulse 2.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.hpt{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--gd);text-transform:uppercase;}
+.hh{font-family:'Cormorant Garamond',serif;font-size:clamp(58px,9.5vw,124px);font-weight:700;line-height:.88;letter-spacing:-.01em;opacity:0;animation:fu .9s .22s forwards;}
+.hh em{font-style:italic;color:var(--gd);display:block;margin-top:10px;}
+.hsub{font-size:clamp(15px,1.5vw,17px);color:var(--bd);font-weight:300;max-width:460px;line-height:1.92;margin-top:28px;opacity:0;animation:fu .9s .4s forwards;}
+.hbtns{display:flex;align-items:center;gap:14px;margin-top:40px;flex-wrap:wrap;opacity:0;animation:fu .9s .55s forwards;}
+.btnp{display:inline-flex;align-items:center;gap:9px;background:var(--gd);color:var(--tc);padding:14px 28px;border-radius:10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;}
+.btnp:hover{background:var(--gd2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(191,160,106,.2);}
+.btng{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--bo);color:var(--gd);padding:14px 28px;border-radius:10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btng:hover{border-color:var(--gd);background:var(--gdim);}
+.hst{display:flex;gap:0;margin-top:clamp(52px,7vh,80px);padding-top:clamp(32px,4vh,52px);border-top:1px solid var(--bo);opacity:0;animation:fu .9s .7s forwards;flex-wrap:wrap;}
+.hs{padding:0 clamp(28px,3.5vw,52px) 0 0;margin:0 clamp(28px,3.5vw,52px) 0 0;border-right:1px solid var(--b2);}
+.hs:last-child{border-right:none;padding:0;margin:0;}
+.hn{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,46px);font-weight:700;color:var(--wh);line-height:1;}
+.hl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--mu);text-transform:uppercase;margin-top:7px;}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.ticker{background:var(--gd);padding:12px 0;overflow:hidden;}
+.ticker-t{display:flex;white-space:nowrap;animation:tick 40s linear infinite;}
+.ticker-i{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--tc);text-transform:uppercase;padding:0 28px;}
+.td{opacity:.2;}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.sec{padding:clamp(100px,12vw,160px) clamp(24px,5vw,80px);}
+.lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--gd);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.lbl::before{content:'';display:block;width:24px;height:1px;background:var(--gd);opacity:.55;}
+.hd{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4.5vw,60px);font-weight:700;line-height:1.04;}
+.hd em{font-style:italic;color:var(--gd);}
+.sub{font-size:15px;color:var(--bd);font-weight:300;line-height:1.9;max-width:480px;margin-top:16px;}
+.gdiv{width:40px;height:1.5px;background:var(--gd);margin:32px 0;opacity:.65;}
+#problem{background:var(--s1);}
+.prob-g{display:grid;grid-template-columns:1fr 1fr;gap:clamp(48px,6vw,100px);align-items:start;margin-top:72px;}
+.prob-items{display:flex;flex-direction:column;}
+.pi{display:flex;gap:24px;padding:36px 0;border-bottom:1px solid var(--b2);}
+.pi:first-child{padding-top:0;}
+.pi:last-child{border-bottom:none;}
+.pnum{font-family:'DM Mono',monospace;font-size:10px;color:var(--gd);flex-shrink:0;margin-top:3px;letter-spacing:.1em;}
+.pt{font-size:15px;font-weight:500;color:var(--wh);margin-bottom:8px;}
+.pd{font-size:13px;color:var(--bd);line-height:1.88;font-weight:300;}
+.stat-cards{display:flex;flex-direction:column;gap:12px;position:sticky;top:100px;}
+.sc-stat{background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:32px 32px;cursor:default;transition:border-color .3s,transform .4s cubic-bezier(.23,1,.32,1),box-shadow .3s;overflow:hidden;position:relative;}
+.sc-stat:hover{border-color:var(--bo);transform:translateX(6px);box-shadow:var(--sh-md);}
+.sc-stat-n{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,6vw,72px);font-weight:700;color:var(--gd);line-height:1;}
+.sc-stat-l{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--mu);text-transform:uppercase;margin-top:10px;}
+.sc-stat-reveal{font-size:12px;color:var(--bd);font-weight:300;line-height:1.75;max-height:0;overflow:hidden;opacity:0;margin-top:0;transition:max-height .5s cubic-bezier(.23,1,.32,1),opacity .4s ease,margin-top .4s ease;}
+.sc-stat:hover .sc-stat-reveal{max-height:80px;opacity:1;margin-top:12px;}
+.sc-stat-bar{position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gd);transform:scaleY(0);transform-origin:bottom;transition:transform .5s cubic-bezier(.23,1,.32,1);}
+.sc-stat:hover .sc-stat-bar{transform:scaleY(1);}
+#serve{background:var(--bk);}
+.serve-g{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:64px;}
+.svc{background:var(--card);border:1px solid var(--b2);border-radius:24px;padding:clamp(36px,3.5vw,52px) clamp(32px,3vw,48px);position:relative;overflow:hidden;transition:border-color .3s;}
+.svc:hover{border-color:var(--bo);}
+.svc-acc{position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--gd),rgba(191,160,106,.08));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.23,1,.32,1);}
+.svc:hover .svc-acc{transform:scaleX(1);}
+.svc-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--gd);text-transform:uppercase;margin-bottom:18px;}
+.svc-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--wh);margin-bottom:14px;line-height:1.1;}
+.svc-desc{font-size:13px;color:var(--bd);line-height:1.9;font-weight:300;margin-bottom:20px;}
+.svc-hint{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--mu);display:flex;align-items:center;gap:8px;transition:color .3s;}
+.svc:hover .svc-hint{color:var(--gd);}
+.svc-hint::before{content:'';width:14px;height:1px;background:currentColor;}
+.svc-pains{border-top:1px solid var(--b2);padding-top:0;max-height:0;overflow:hidden;opacity:0;transition:max-height .6s cubic-bezier(.23,1,.32,1),opacity .45s ease,padding-top .4s ease;}
+.svc:hover .svc-pains{max-height:200px;opacity:1;padding-top:18px;}
+.svc-pt{font-size:12px;color:var(--mu);padding:6px 0;display:flex;gap:12px;font-weight:300;}
+.svc-pt::before{content:'—';color:var(--gd);flex-shrink:0;}
+.svc-nums{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;padding-top:20px;border-top:1px solid var(--b2);}
+.svc-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--wh);}
+.svc-numl{font-size:11px;color:var(--mu);font-weight:300;margin-top:3px;}
+#systems{background:var(--s1);}
+.sys-intro{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;margin-bottom:64px;}
+.sys-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.sysc{background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:32px 28px;position:relative;overflow:hidden;cursor:default;transition:border-color .3s;}
+.sysc:hover{border-color:var(--bo);}
+.sysc-bar{position:absolute;bottom:0;left:0;right:0;height:1.5px;background:var(--gd);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.23,1,.32,1);}
+.sysc:hover .sysc-bar{transform:scaleX(1);}
+.sy-n{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--gd);margin-bottom:20px;}
+.sy-t{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--wh);line-height:1.15;margin-bottom:10px;}
+.sy-peek{font-size:12px;color:var(--mu);font-weight:300;line-height:1.6;}
+.sy-reveal{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.23,1,.32,1),opacity .4s ease;}
+.sysc:hover .sy-reveal{max-height:140px;opacity:1;}
+.sy-d{font-size:12px;color:var(--bd);line-height:1.82;font-weight:300;margin-top:12px;}
+.sy-trg{margin-top:14px;padding-top:12px;border-top:1px solid var(--b2);font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.1em;}
+#flow{background:var(--bk);}
+.flow-g{display:grid;grid-template-columns:repeat(5,1fr);position:relative;margin-top:72px;gap:0;}
+.flow-line{position:absolute;top:32px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--bo),var(--bo),transparent);}
+.flow-s{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 10px;}
+.flow-c{width:64px;height:64px;border:1px solid var(--bo);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;color:var(--gd);background:var(--bk);position:relative;z-index:1;transition:all .3s;cursor:default;margin-bottom:22px;}
+.flow-s:hover .flow-c{background:var(--gd);color:var(--tc);border-color:var(--gd);}
+.flow-tt{font-size:13px;font-weight:500;color:var(--wh);margin-bottom:7px;}
+.flow-ds{font-size:11px;color:var(--mu);line-height:1.75;font-weight:300;}
+.flow-tm{font-family:'DM Mono',monospace;font-size:9px;color:var(--gd);letter-spacing:.1em;margin-top:12px;opacity:.6;}
+.flow-st{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:56px;}
+.flow-sc{background:var(--card);border-radius:18px;padding:28px 24px;border:1px solid var(--b2);transition:border-color .3s;}
+.flow-sc:hover{border-color:var(--bo);}
+.flow-sn{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--wh);margin-bottom:8px;}
+.flow-sl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.14em;text-transform:uppercase;line-height:1.6;}
+#results{background:var(--s1);}
+.res-g{display:grid;grid-template-columns:1fr 1fr;gap:clamp(48px,6vw,88px);align-items:start;}
+.met-l{display:flex;flex-direction:column;gap:10px;margin-top:28px;}
+.met{display:flex;align-items:center;gap:20px;background:var(--card);border-radius:18px;padding:24px;border:1px solid var(--b2);border-left:2px solid var(--gd);transition:transform .3s,box-shadow .3s;}
+.met:hover{transform:translateX(6px);box-shadow:var(--sh-md);}
+.met-n{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;color:var(--gd);flex-shrink:0;min-width:84px;line-height:1;}
+.met-t{font-size:14px;font-weight:500;color:var(--wh);margin-bottom:4px;}
+.met-d{font-size:12px;color:var(--mu);line-height:1.55;font-weight:300;}
+.cmp{display:flex;flex-direction:column;gap:12px;margin-top:28px;}
+.cmp-l{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--mu);text-transform:uppercase;margin-bottom:8px;}
+.cmp-c{background:var(--card);border-radius:18px;padding:20px 24px;border:1px solid var(--b2);}
+.cmp-c.after{border-color:var(--bo);}
+.cr{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--bd);padding:7px 0;border-bottom:1px solid var(--b3);font-weight:300;}
+.cr:last-child{border-bottom:none;padding-bottom:0;}
+.cx{color:var(--bx);flex-shrink:0;font-size:11px;}
+.cc{color:var(--gd);flex-shrink:0;font-size:14px;}
+#founder{background:var(--bk);padding:0;}
+.founder-wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:80svh;}
+.founder-l{background:var(--s1);padding:clamp(80px,10vw,140px) clamp(40px,4vw,72px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;}
+.founder-l::after{content:'';position:absolute;right:-36px;top:50%;transform:translateY(-50%);width:72px;height:72px;background:var(--bk);border-radius:50%;z-index:3;box-shadow:-4px 0 24px rgba(0,0,0,.18);}
+[data-theme="light"] .founder-l::after{box-shadow:-4px 0 14px rgba(0,0,0,.07);}
+.founder-r{background:var(--bk);padding:clamp(80px,10vw,140px) clamp(40px,4vw,72px) clamp(80px,10vw,140px) clamp(64px,5vw,96px);display:flex;flex-direction:column;justify-content:center;}
+.f-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--gd);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.f-tag::before{content:'';width:20px;height:1px;background:var(--gd);opacity:.55;}
+.f-name{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,5.5vw,72px);font-weight:700;color:var(--wh);line-height:.9;margin-bottom:8px;}
+.f-role{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--mu);text-transform:uppercase;margin-bottom:36px;}
+.f-bio{font-size:14px;color:var(--bd);font-weight:300;line-height:1.92;max-width:380px;margin-bottom:36px;}
+.f-chips{display:flex;flex-direction:column;gap:8px;}
+.f-chip{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--b2);transition:border-color .25s,transform .3s;overflow:hidden;}
+.f-chip:hover{border-color:var(--bo);transform:translateX(5px);}
+.f-cn{font-family:'DM Mono',monospace;font-size:9px;color:var(--gd);flex-shrink:0;margin-top:3px;}
+.f-ct{font-size:13px;font-weight:500;color:var(--wh);line-height:1.35;}
+.f-cd{font-size:11px;color:var(--mu);font-weight:300;line-height:1.6;max-height:0;overflow:hidden;opacity:0;transition:max-height .45s cubic-bezier(.23,1,.32,1),opacity .35s ease,margin-top .35s ease;margin-top:0;}
+.f-chip:hover .f-cd{max-height:60px;opacity:1;margin-top:4px;}
+.f-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.2vw,26px);font-style:italic;color:var(--wh);line-height:1.6;padding-left:24px;border-left:2px solid var(--gd);margin-bottom:48px;}
+.f-meet{display:inline-flex;align-items:center;gap:14px;border:1px solid var(--bo);border-radius:16px;padding:18px 22px;background:var(--gdim);cursor:pointer;transition:all .25s;max-width:300px;margin-bottom:52px;}
+.f-meet:hover{border-color:var(--gd);transform:translateY(-2px);box-shadow:var(--sh-md);}
+.f-meet-dot{width:7px;height:7px;background:var(--gd);border-radius:50%;flex-shrink:0;animation:pulse 2.2s infinite;}
+.f-meet-name{font-size:14px;color:var(--wh);font-weight:500;line-height:1.25;}
+.f-meet-role{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.1em;margin-top:2px;}
+.f-meet-arr{font-family:'DM Mono',monospace;font-size:11px;color:var(--gd);margin-left:auto;}
+.f-stats{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.f-sn{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:var(--gd);line-height:1;}
+.f-sl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.13em;color:var(--mu);text-transform:uppercase;margin-top:5px;line-height:1.55;}
+#pricing{background:var(--s1);}
+.pr-h{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;margin-bottom:64px;}
+.pr-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.prc{background:var(--card);border-radius:24px;padding:clamp(28px,3vw,44px) clamp(24px,2.5vw,36px);border:1px solid var(--b2);position:relative;transition:transform .4s cubic-bezier(.23,1,.32,1),box-shadow .3s,border-color .3s;}
+.prc:hover{transform:translateY(-6px);box-shadow:var(--sh-md);}
+.prc.ft{background:var(--s2);border-color:var(--bo);}
+.pr-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gd);color:var(--tc);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;padding:5px 18px;border-radius:100px;font-weight:500;text-transform:uppercase;white-space:nowrap;}
+.pr-tier{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--gd);text-transform:uppercase;margin-bottom:20px;}
+.pr-amt{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;color:var(--wh);line-height:1;}
+.pr-per{font-size:12px;color:var(--mu);font-weight:300;margin-bottom:8px;}
+.pr-who{font-family:'DM Mono',monospace;font-size:9px;color:var(--gd);letter-spacing:.08em;margin-bottom:28px;}
+.pr-div{height:1px;background:var(--b2);margin-bottom:22px;}
+.pr-fl{list-style:none;display:flex;flex-direction:column;}
+.pr-fl li{font-size:12px;color:var(--bd);padding:8px 0;border-bottom:1px solid var(--b3);display:flex;gap:10px;font-weight:300;}
+.pr-fl li:last-child{border-bottom:none;}
+.pr-fl li::before{content:'—';color:var(--gd);flex-shrink:0;}
+.pr-note{margin-top:18px;font-size:11px;color:var(--mu);font-style:italic;padding-top:14px;border-top:1px solid var(--b2);line-height:1.65;}
+#cta{background:var(--bk);text-align:center;position:relative;overflow:hidden;padding:clamp(120px,14vw,180px) clamp(24px,5vw,80px);}
+.cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 50% 50%,rgba(191,160,106,.06) 0%,transparent 60%);pointer-events:none;}
+.cta-i{position:relative;z-index:2;}
+.cta-h{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,92px);font-weight:700;line-height:.95;}
+.cta-h em{font-style:italic;color:var(--gd);}
+.cta-p{font-size:clamp(14px,1.4vw,16px);color:var(--bd);max-width:420px;margin:24px auto 52px;line-height:1.9;font-weight:300;}
+.cta-box{display:inline-flex;flex-direction:column;align-items:center;gap:5px;border:1px solid var(--bo);border-radius:24px;padding:28px 52px;margin-top:28px;background:var(--gdim2);transition:border-color .25s,background .25s,transform .25s;}
+.cta-box:hover{border-color:var(--gd);background:var(--gdim);transform:translateY(-3px);}
+.cta-cl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--mu);text-transform:uppercase;}
+.cta-em{font-family:'Cormorant Garamond',serif;font-size:26px;font-style:italic;color:var(--gd);}
+.cta-inf{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.1em;margin-top:3px;}
+footer{background:var(--nv);border-top:1px solid var(--bo);padding:clamp(52px,7vw,84px) clamp(24px,5vw,80px) clamp(28px,3vw,44px);}
+.ft-g{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:clamp(24px,3vw,52px);margin-bottom:52px;}
+.ft-desc{font-size:13px;color:var(--mu);font-weight:300;line-height:1.85;max-width:240px;margin-top:14px;}
+.ft-h{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--gd);text-transform:uppercase;margin-bottom:18px;}
+.ft-lk{display:block;font-size:13px;color:var(--mu);margin-bottom:10px;font-weight:300;cursor:pointer;transition:color .2s;}
+.ft-lk:hover{color:var(--wh);}
+.ft-bar{border-top:1px solid var(--b2);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.ft-cp{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.1em;}
+.float{position:fixed;bottom:28px;right:28px;z-index:700;display:flex;flex-direction:column;align-items:flex-end;gap:10px;opacity:0;pointer-events:none;transition:opacity .4s;}
+.float.show{opacity:1;pointer-events:all;}
+.float-pill{background:var(--card);border:1px solid var(--bo);border-radius:100px;padding:11px 20px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .25s;box-shadow:var(--sh-md);}
+.float-pill:hover{border-color:var(--gd);transform:translateY(-2px);}
+.float-dot{width:6px;height:6px;background:var(--gd);border-radius:50%;animation:pulse 2.2s infinite;}
+.float-txt{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--wh);text-transform:uppercase;white-space:nowrap;}
+.float-btn{width:48px;height:48px;background:var(--gd);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;box-shadow:0 8px 28px rgba(191,160,106,.22);}
+.float-btn:hover{background:var(--gd2);transform:scale(1.08);}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;}
+.rv.on{opacity:1;transform:translateY(0);}
+.rv-l{opacity:0;transform:translateX(-24px);transition:opacity .8s ease,transform .8s ease;}
+.rv-l.on{opacity:1;transform:translateX(0);}
+.rv-r{opacity:0;transform:translateX(24px);transition:opacity .8s ease,transform .8s ease;}
+.rv-r.on{opacity:1;transform:translateX(0);}
+@media(max-width:1200px){.sys-g{grid-template-columns:1fr 1fr;}.pr-g{grid-template-columns:1fr;max-width:400px;margin:0 auto;}}
+@media(max-width:1024px){.sys-intro{grid-template-columns:1fr;gap:24px;}.founder-wrap{grid-template-columns:1fr;}.founder-l::after{display:none;}.founder-l,.founder-r{padding:clamp(60px,8vw,100px) clamp(28px,5vw,64px);}.prob-g{gap:48px;}}
+@media(max-width:900px){.ft-g{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.nlk,.ncta{display:none;}.ham{display:flex;}.prob-g,.serve-g,.res-g,.flow-g,.flow-st{grid-template-columns:1fr;}.flow-line{display:none;}.stat-cards{position:static;}.hst{flex-direction:column;gap:0;}.hs{border-right:none;border-bottom:1px solid var(--b2);padding:16px 0;margin:0;}.hs:last-child{border-bottom:none;padding:16px 0 0;}.hbtns{flex-direction:column;align-items:stretch;}.hbtns .btnp,.hbtns .btng{justify-content:center;}.sys-g{grid-template-columns:1fr;}.float-pill{display:none;}.pr-h{grid-template-columns:1fr;gap:24px;}.pr-g{max-width:100%;}}
+@media(max-width:640px){.serve-g,.svc-nums,.f-stats,.ft-g{grid-template-columns:1fr;}.cta-box{padding:22px 28px;}.cta-em{font-size:20px;}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="ring"></div>
+<div class="mob" id="mob">
+  <div class="mob-lk" onclick="go('serve');closeMob()">Who We Serve</div>
+  <div class="mob-lk" onclick="go('systems');closeMob()">How It Works</div>
+  <div class="mob-lk" onclick="go('results');closeMob()">Results</div>
+  <div class="mob-lk" onclick="go('founder');closeMob()">About</div>
+  <div class="mob-lk" onclick="go('pricing');closeMob()">Pricing</div>
+  <div class="mob-lk" onclick="go('cta');closeMob()">Book a Call →</div>
+  <div class="mob-ft">presenceix.com · Dallas, TX</div>
+</div>
+<nav id="nav">
+  <div class="nl" onclick="scrollTo(0,0)">
+    <svg width="34" height="22" viewBox="0 0 38 26" fill="none"><line x1="0" y1="13" x2="38" y2="13" stroke="#BFA06A" stroke-width=".5" opacity=".18"/><polyline points="0,13 7,13 10,13 12,13 14,1 16,13 19,13 26,13 38,13" fill="none" stroke="#BFA06A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="1" r="2.3" fill="#BFA06A"/></svg>
+    <div class="nm">PRESENCE<span>IX</span></div>
+  </div>
+  <div class="nlk">
+    <span class="nk" onclick="go('serve')">Who We Serve</span>
+    <span class="nk" onclick="go('systems')">How It Works</span>
+    <span class="nk" onclick="go('founder')">About</span>
+    <span class="nk" onclick="go('pricing')">Pricing</span>
+  </div>
+  <div class="nr">
+    <button class="tbtn" id="tbtn" aria-label="Toggle theme">
+      <svg class="i-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="i-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="ncta" onclick="go('cta')">Book a Call →</div>
+    <div class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<section id="hero">
+  <div class="hgrid"></div><div class="hglow"></div>
+  <div class="hi">
+    <div class="hpill"><span class="hdot"></span><span class="hpt">AI Automation · Real Estate &amp; Home Services</span></div>
+    <div class="hh">Never Lose<em>Another Lead.</em></div>
+    <div class="hsub">PresenceIX installs six AI systems that respond in under 60 seconds, follow up automatically, and book appointments — around the clock, every single day.</div>
+    <div class="hbtns"><div class="btnp" onclick="go('cta')">Book a Free Call →</div><div class="btng" onclick="go('systems')">See How It Works</div></div>
+    <div class="hst">
+      <div class="hs"><div class="hn">&lt;60s</div><div class="hl">AI Response Time</div></div>
+      <div class="hs"><div class="hn">9×</div><div class="hl">Higher Conversion</div></div>
+      <div class="hs"><div class="hn">6</div><div class="hl">AI Systems</div></div>
+      <div class="hs"><div class="hn">24/7</div><div class="hl">Always On</div></div>
+    </div>
+  </div>
+</section>
+<div class="ticker"><div class="ticker-t"><span class="ticker-i">Never lose another lead<span class="td"> · </span></span><span class="ticker-i">Respond in under 60 seconds<span class="td"> · </span></span><span class="ticker-i">Real estate brokerages<span class="td"> · </span></span><span class="ticker-i">Home service businesses<span class="td"> · </span></span><span class="ticker-i">AI qualification 24/7<span class="td"> · </span></span><span class="ticker-i">Automated appointment booking<span class="td"> · </span></span><span class="ticker-i">PresenceIX<span class="td"> · </span></span><span class="ticker-i">Never lose another lead<span class="td"> · </span></span><span class="ticker-i">Respond in under 60 seconds<span class="td"> · </span></span><span class="ticker-i">Real estate brokerages<span class="td"> · </span></span><span class="ticker-i">Home service businesses<span class="td"> · </span></span><span class="ticker-i">AI qualification 24/7<span class="td"> · </span></span><span class="ticker-i">Automated appointment booking<span class="td"> · </span></span><span class="ticker-i">PresenceIX<span class="td"> · </span></span></div></div>
+<section id="problem" class="sec">
+  <div class="lbl rv">The Problem</div>
+  <div class="hd rv" style="max-width:640px;">Businesses are bleeding revenue<br><em>every single day.</em></div>
+  <div class="prob-g">
+    <div class="prob-items rv-l">
+      <div class="pi"><span class="pnum">01</span><div><div class="pt">The 5-minute window is everything</div><div class="pd">A lead who doesn't hear back within 5 minutes is 9× less likely to convert. Most businesses respond in hours. By then, a competitor already has the appointment.</div></div></div>
+      <div class="pi"><span class="pnum">02</span><div><div class="pt">Your team is buried in manual work</div><div class="pd">Top performers spend 3+ hours daily on repetitive outreach — texting, calling, following up. Time that should be spent closing deals and completing jobs.</div></div></div>
+      <div class="pi"><span class="pnum">03</span><div><div class="pt">Leads fall through the cracks constantly</div><div class="pd">Multiple sources, multiple inboxes, no system. A lead hits at 9pm Friday and no one touches it until Monday — if at all. That's your competitor's client now.</div></div></div>
+    </div>
+    <div class="stat-cards rv-r">
+      <div class="sc-stat"><div class="sc-stat-bar"></div><div class="sc-stat-n">78%</div><div class="sc-stat-l">Leads go to the first responder — not the best</div><div class="sc-stat-reveal">Speed is the only competitive advantage that matters at the top of the funnel. Response time wins the lead every time — not quality, not reputation.</div></div>
+      <div class="sc-stat"><div class="sc-stat-bar"></div><div class="sc-stat-n" style="font-size:clamp(48px,5.5vw,64px);">$47B</div><div class="sc-stat-l">Lost annually in US real estate to slow response</div><div class="sc-stat-reveal">That figure is just real estate. Home services loses billions more. The problem isn't lead quality — it's what happens after those leads arrive.</div></div>
+      <div class="sc-stat"><div class="sc-stat-bar"></div><div class="sc-stat-n" style="font-size:clamp(48px,5.5vw,64px);">5 hrs</div><div class="sc-stat-l">Average industry response time</div><div class="sc-stat-reveal">PresenceIX responds in under 60 seconds. That gap — 5 hours vs. 60 seconds — is the entire difference between a booked appointment and a lost lead.</div></div>
+    </div>
+  </div>
+</section>
+<section id="serve" class="sec" style="background:var(--bk);">
+  <div class="lbl rv">Who We Serve</div>
+  <div class="hd rv">Two industries.<em> One solution.</em></div>
+  <div class="serve-g">
+    <div class="svc rv-l"><div class="svc-acc"></div><div class="svc-tag">Vertical 01 — Real Estate</div><div class="svc-title">Brokerages &amp; Agent Teams</div><div class="svc-desc">Independent brokerages, franchise teams (KW, RE/MAX, eXp), and high-volume buyer's agent groups spending thousands on leads they can't convert fast enough.</div><div class="svc-hint">Hover to see the pain points</div><div class="svc-pains"><div class="svc-pt">Zillow &amp; Realtor.com leads going cold overnight</div><div class="svc-pt">Agents spending 3+ hours daily on manual follow-up</div><div class="svc-pt">No unified system across multiple lead sources</div><div class="svc-pt">Zero pipeline visibility or performance reporting</div></div><div class="svc-nums"><div><div class="svc-num">106K</div><div class="svc-numl">US brokerages</div></div><div><div class="svc-num">1.3M</div><div class="svc-numl">licensed agents</div></div></div></div>
+    <div class="svc rv-r"><div class="svc-acc"></div><div class="svc-tag">Vertical 02 — Home Services</div><div class="svc-title">HVAC, Plumbing &amp; Electrical</div><div class="svc-desc">Solo operators and small teams who miss calls daily, lose jobs to faster competitors, and have no system for following up on quotes or recovering missed opportunities.</div><div class="svc-hint">Hover to see the pain points</div><div class="svc-pains"><div class="svc-pt">Missed calls = jobs going straight to competition</div><div class="svc-pt">Quotes sent with no automated follow-up system</div><div class="svc-pt">Emergency leads hitting voicemail at peak hours</div><div class="svc-pt">Reviews never requested after completed jobs</div></div><div class="svc-nums"><div><div class="svc-num">850K</div><div class="svc-numl">home service cos.</div></div><div><div class="svc-num">$657B</div><div class="svc-numl">market size</div></div></div></div>
+  </div>
+</section>
+<section id="systems" class="sec" style="background:var(--s1);">
+  <div class="sys-intro"><div><div class="lbl rv">How It Works</div><div class="hd rv">Six AI systems.<em> Zero admin.</em></div></div><div class="sub rv">We install a complete AI automation stack. Every system connects to the next. Hover any card to see exactly what it does and what triggers it.</div></div>
+  <div class="sys-g">
+    <div class="sysc rv"><div class="sysc-bar"></div><div class="sy-n">SYSTEM 01</div><div class="sy-t">Lead Capture &amp; CRM</div><div class="sy-peek">Every lead, every channel, AI-scored in seconds.</div><div class="sy-reveal"><div class="sy-d">Every lead from Zillow, missed calls, Google Ads, Yelp, and web forms — captured, logged, and scored automatically. Nothing escapes the system.</div><div class="sy-trg">TRIGGER → Lead enters any channel</div></div></div>
+    <div class="sysc rv"><div class="sysc-bar"></div><div class="sy-n">SYSTEM 02</div><div class="sy-t">AI Follow-Up Sequences</div><div class="sy-peek">6-touch automated sequence. Stops when they reply.</div><div class="sy-reveal"><div class="sy-d">Personalized SMS and email at 15 min, 1hr, 4hr, 24hr, 48hr, and 7 days. Each message is unique to the lead. Stops the moment they respond.</div><div class="sy-trg">TRIGGER → Lead captured, no reply</div></div></div>
+    <div class="sysc rv"><div class="sysc-bar"></div><div class="sy-n">SYSTEM 03</div><div class="sy-t">Proposal &amp; Contract</div><div class="sy-peek">Discovery → signed contract, fully automated.</div><div class="sy-reveal"><div class="sy-d">Discovery complete → PandaDoc proposal auto-sent → signed → CRM updates to Won → onboarding fires. Zero manual steps between discovery and signed contract.</div><div class="sy-trg">TRIGGER → Discovery call marked complete</div></div></div>
+    <div class="sysc rv"><div class="sysc-bar"></div><div class="sy-n">SYSTEM 04</div><div class="sy-t">Client Onboarding</div><div class="sy-peek">Contract signed → everything set up in minutes.</div><div class="sy-reveal"><div class="sy-d">Welcome email, intake form, Notion workspace, Drive folder, and Stripe invoice — all triggered and completed within minutes of contract signing.</div><div class="sy-trg">TRIGGER → Contract signed</div></div></div>
+    <div class="sysc rv"><div class="sysc-bar"></div><div class="sy-n">SYSTEM 05</div><div class="sy-t">Reporting &amp; Invoicing</div><div class="sy-peek">AI report + invoice sent on the 1st, automatically.</div><div class="sy-reveal"><div class="sy-d">Every month, AI pulls real performance data, writes a personalized client report, converts to PDF, emails it, and fires the Stripe invoice. All automatic.</div><div class="sy-trg">TRIGGER → 1st of every month</div></div></div>
+    <div class="sysc rv"><div class="sysc-bar"></div><div class="sy-n">SYSTEM 06</div><div class="sy-t">Social &amp; Content</div><div class="sy-peek">One idea → published on all platforms automatically.</div><div class="sy-reveal"><div class="sy-d">Write one idea in Notion. AI reformats for LinkedIn, Instagram, and X with platform-specific tone and hashtags. Buffer publishes automatically.</div><div class="sy-trg">TRIGGER → Post marked "Ready"</div></div></div>
+  </div>
+</section>
+<section id="flow" class="sec" style="background:var(--bk);">
+  <div class="lbl rv">Lead Journey</div>
+  <div class="hd rv">Unknown lead to <em>booked appointment.</em></div>
+  <div class="flow-g">
+    <div class="flow-line"></div>
+    <div class="flow-s rv"><div class="flow-c">01</div><div class="flow-tt">Lead Enters</div><div class="flow-ds">Any channel — SMS, missed call, web form, Zillow, Google Ads</div><div class="flow-tm">T + 0:00</div></div>
+    <div class="flow-s rv"><div class="flow-c">02</div><div class="flow-tt">AI Scores</div><div class="flow-ds">Urgency scored — CRITICAL, URGENT, WARM, COLD — in seconds</div><div class="flow-tm">T + 0:03</div></div>
+    <div class="flow-s rv"><div class="flow-c">03</div><div class="flow-tt">AI Responds</div><div class="flow-ds">Personalized SMS in under 60 seconds. Sounds human. Never generic.</div><div class="flow-tm">T + 0:41</div></div>
+    <div class="flow-s rv"><div class="flow-c">04</div><div class="flow-tt">Appointment Set</div><div class="flow-ds">Booking confirmed, team notified automatically</div><div class="flow-tm">T + hours</div></div>
+    <div class="flow-s rv"><div class="flow-c">05</div><div class="flow-tt">Deal Closes</div><div class="flow-ds">Review requested. Referral triggered. Revenue recovered.</div><div class="flow-tm">T + days</div></div>
+  </div>
+  <div class="flow-st">
+    <div class="flow-sc rv"><div class="flow-sn">&lt;60s</div><div class="flow-sl">Response time vs. 5hr+ industry average</div></div>
+    <div class="flow-sc rv"><div class="flow-sn">6×</div><div class="flow-sl">Automated follow-up touches per lead</div></div>
+    <div class="flow-sc rv"><div class="flow-sn">Zero</div><div class="flow-sl">Human involvement until appointment confirmed</div></div>
+  </div>
+</section>
+<section id="results" class="sec" style="background:var(--s1);">
+  <div class="res-g">
+    <div><div class="lbl rv">The Results</div><div class="hd rv">Measurable ROI<em> from day one.</em></div><div class="gdiv rv"></div><div class="met-l"><div class="met rv"><div class="met-n">9×</div><div><div class="met-t">Higher lead conversion rate</div><div class="met-d">Responding in under 60 seconds vs. 5+ hours. Speed wins every single time.</div></div></div><div class="met rv"><div class="met-n">3hr</div><div><div class="met-t">Saved per team member per day</div><div class="met-d">No more manual chasing. Your team arrives at pre-qualified appointments.</div></div></div><div class="met rv"><div class="met-n">0%</div><div><div class="met-t">Lead leakage</div><div class="met-d">Every lead captured, scored, and followed up — no exceptions, ever.</div></div></div></div></div>
+    <div class="rv-r"><div class="cmp"><div><div class="cmp-l">Before PresenceIX</div><div class="cmp-c"><div class="cr"><span class="cx">✕</span>Leads sitting for hours with no response</div><div class="cr"><span class="cx">✕</span>Manual texting and follow-up all day</div><div class="cr"><span class="cx">✕</span>Missed calls = missed revenue, daily</div><div class="cr"><span class="cx">✕</span>No unified view of the pipeline</div><div class="cr"><span class="cx">✕</span>Monthly reports written by hand</div><div class="cr"><span class="cx">✕</span>Reviews never requested after close</div></div></div><div><div class="cmp-l">After PresenceIX</div><div class="cmp-c after"><div class="cr"><span class="cc">—</span>AI responds in under 60 seconds, 24/7</div><div class="cr"><span class="cc">—</span>Team arrives at pre-qualified appointments</div><div class="cr"><span class="cc">—</span>Every missed call captured and followed up</div><div class="cr"><span class="cc">—</span>Live pipeline dashboard, full visibility</div><div class="cr"><span class="cc">—</span>AI report delivered on the 1st, automatically</div><div class="cr"><span class="cc">—</span>Reviews and referrals automated post-close</div></div></div></div></div>
+  </div>
+</section>
+<section id="founder">
+  <div class="founder-wrap">
+    <div class="founder-l rv-l">
+      <div class="f-tag">Founded by</div>
+      <div class="f-name">Kachi<br>Ezibe</div>
+      <div class="f-role">Founder &amp; CEO · Dallas, TX</div>
+      <div class="f-bio">At 18, I built PresenceIX from scratch because I kept watching businesses spend thousands on leads they couldn't follow up fast enough. I built the system myself, deployed it into production, and now I install it into businesses across the US.</div>
+      <div class="f-chips">
+        <div class="f-chip"><span class="f-cn">01</span><div><div class="f-ct">Two production AI systems</div><div class="f-cd">PresenceIX (real estate) + Call Saver (home services) — merged into one dual-vertical platform, fully operational.</div></div></div>
+        <div class="f-chip"><span class="f-cn">02</span><div><div class="f-ct">Full technical stack — live and deployed</div><div class="f-cd">Airtable, Make.com, Claude API, Twilio, Stripe, HubSpot. Not planned — operational and running.</div></div></div>
+        <div class="f-chip"><span class="f-cn">03</span><div><div class="f-ct">Also founder of Folio Studio</div><div class="f-cd">Web design for small businesses, running simultaneously alongside PresenceIX.</div></div></div>
+      </div>
+    </div>
+    <div class="founder-r rv-r">
+      <div class="f-quote">"I didn't build a prototype. I built a production system — with AI that works, data architecture that scales, and automation that runs without me."</div>
+      <div class="f-meet" onclick="go('cta')"><div class="f-meet-dot"></div><div><div class="f-meet-name">Kachi Ezibe</div><div class="f-meet-role">Founder &amp; CEO · PresenceIX</div></div><div class="f-meet-arr">→</div></div>
+      <div class="f-stats"><div><div class="f-sn">2</div><div class="f-sl">Production AI<br>systems built</div></div><div><div class="f-sn">US</div><div class="f-sl">Clients across<br>the country</div></div><div><div class="f-sn">18</div><div class="f-sl">Years old when<br>PresenceIX launched</div></div><div><div class="f-sn">0</div><div class="f-sl">Offshore teams or<br>middlemen, ever</div></div></div>
+    </div>
+  </div>
+</section>
+<section id="pricing" class="sec" style="background:var(--s1);">
+  <div class="pr-h"><div><div class="lbl rv">Investment</div><div class="hd rv">One closed deal pays for<br>PresenceIX <em>for an entire year.</em></div></div><div class="sub rv">Usually happens in the first week. Start on Growth and see the ROI before committing to anything more.</div></div>
+  <div class="pr-g">
+    <div class="prc rv"><div class="pr-tier">Pilot</div><div class="pr-amt">$1,500</div><div class="pr-per">per month</div><div class="pr-who">Solo agents &amp; small operators</div><div class="pr-div"></div><ul class="pr-fl"><li>Lead Capture &amp; CRM</li><li>AI Follow-Up Sequences</li><li>1 lead source integrated</li><li>Monthly performance report</li><li>Up to 5 team members</li><li>Email support</li></ul><div class="pr-note">One recovered lead per month covers the cost for two full years.</div></div>
+    <div class="prc ft rv"><div class="pr-badge">Most Popular</div><div class="pr-tier">Growth</div><div class="pr-amt">$3,500</div><div class="pr-per">per month</div><div class="pr-who">Teams of 5–20 · Growing businesses</div><div class="pr-div"></div><ul class="pr-fl"><li>All 6 AI systems active</li><li>All lead sources integrated</li><li>Proposal &amp; Contract automation</li><li>Client Onboarding system</li><li>Social Media automation</li><li>Up to 20 team members</li><li>Priority support</li><li>Monthly strategy call with Kachi</li></ul><div class="pr-note">One extra closed deal = 10× ROI. Typically in the first week.</div></div>
+    <div class="prc rv"><div class="pr-tier">Full Partner</div><div class="pr-amt">$6,500</div><div class="pr-per">per month</div><div class="pr-who">Large brokerages &amp; franchise groups</div><div class="pr-div"></div><ul class="pr-fl"><li>Everything in Growth</li><li>Custom AI configuration</li><li>Dedicated account manager</li><li>Unlimited team members</li><li>Custom integrations built</li><li>Weekly strategy sessions</li></ul><div class="pr-note">Enterprise ROI — typically 15–25× within 90 days.</div></div>
+  </div>
+</section>
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-i">
+    <div class="lbl rv" style="justify-content:center;">Ready to Start</div>
+    <div class="cta-h rv">Stop losing leads.<br><em>Start closing deals.</em></div>
+    <div class="cta-p rv">Book a free 20-minute call. We'll show you exactly how many leads your business is losing right now — and what PresenceIX does about it. No pitch. Just data.</div>
+    <div class="rv"><div class="btnp" style="display:inline-flex;margin-bottom:28px;" onclick="window.open('https://cal.com/kachi-presenceix','_blank')">Book Your Free Call →</div></div>
+    <div class="cta-box rv"><div class="cta-cl">Or reach out directly</div><div class="cta-em">kachi@presenceix.com</div><div class="cta-inf">presenceix.com · +1 (646) 207-0244</div></div>
+  </div>
+</section>
+<footer>
+  <div class="ft-g">
+    <div><div style="display:flex;align-items:center;gap:12px;"><svg width="30" height="20" viewBox="0 0 38 26" fill="none"><line x1="0" y1="13" x2="38" y2="13" stroke="#BFA06A" stroke-width=".5" opacity=".18"/><polyline points="0,13 7,13 10,13 12,13 14,1 16,13 19,13 26,13 38,13" fill="none" stroke="#BFA06A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="1" r="2.3" fill="#BFA06A"/></svg><div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--wh);letter-spacing:.06em;">PRESENCE<span style="color:var(--gd);">IX</span></div></div><div class="ft-desc">AI automation for real estate brokerages and home service businesses. Never lose another lead.</div></div>
+    <div><div class="ft-h">Services</div><div class="ft-lk">Lead Capture &amp; CRM</div><div class="ft-lk">AI Follow-Up</div><div class="ft-lk">Proposal Automation</div><div class="ft-lk">Client Onboarding</div><div class="ft-lk">Reporting &amp; Invoicing</div></div>
+    <div><div class="ft-h">Company</div><div class="ft-lk" onclick="go('serve')">Who We Serve</div><div class="ft-lk" onclick="go('systems')">How It Works</div><div class="ft-lk" onclick="go('founder')">About</div><div class="ft-lk" onclick="go('pricing')">Pricing</div></div>
+    <div><div class="ft-h">Contact</div><div class="ft-lk">kachi@presenceix.com</div><div class="ft-lk">+1 (646) 207-0244</div><div class="ft-lk" onclick="window.open('https://cal.com/kachi-presenceix','_blank')">Book a Call ↗</div><div class="ft-lk">LinkedIn ↗</div></div>
+  </div>
+  <div class="ft-bar"><div class="ft-cp">© 2026 PRESENCEIX · ALL RIGHTS RESERVED · DALLAS, TEXAS</div><div class="ft-cp">NEVER LOSE ANOTHER LEAD.</div></div>
+</footer>
+<div class="float" id="float-cta">
+  <div class="float-pill" onclick="go('cta')"><div class="float-dot"></div><span class="float-txt">Book a Free Call</span></div>
+  <div class="float-btn" onclick="go('cta')"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--tc)"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+</div>
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+if(matchMedia('(hover:hover) and (pointer:fine)').matches){document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},90);});}
+function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
+const html=document.documentElement;const sv=localStorage.getItem('pix-t');if(sv)html.setAttribute('data-theme',sv);
+document.getElementById('tbtn').addEventListener('click',()=>{const n=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',n);localStorage.setItem('pix-t',n);});
+const ham=document.getElementById('ham'),mob=document.getElementById('mob');let mo=false;
+function toggleMob(){mo=!mo;ham.classList.toggle('open',mo);mob.classList.toggle('open',mo);document.body.style.overflow=mo?'hidden':'';}
+function closeMob(){mo=false;ham.classList.remove('open');mob.classList.remove('open');document.body.style.overflow='';}
+mob.addEventListener('click',e=>{if(e.target===mob)closeMob();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mo)closeMob();});
+const allRv=document.querySelectorAll('.rv,.rv-l,.rv-r');
+function reveal(){allRv.forEach(el=>{if(el.getBoundingClientRect().top<innerHeight-60)el.classList.add('on');});}
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('stuck',scrollY>40);document.getElementById('float-cta').classList.toggle('show',scrollY>300);reveal();},{passive:true});
+reveal();
+document.querySelectorAll('.sys-g .sysc').forEach((el,i)=>el.style.transitionDelay=(i*.06)+'s');
+document.querySelectorAll('.pr-g .prc').forEach((el,i)=>el.style.transitionDelay=(i*.08)+'s');
+document.querySelectorAll('.flow-s').forEach((el,i)=>el.style.transitionDelay=(i*.07)+'s');
+if(matchMedia('(hover:hover)').matches){['.sc-stat','.svc','.sysc','.prc','.met'].forEach(sel=>{document.querySelectorAll(sel).forEach(c=>{const mx=sel==='.prc'?4:sel==='.svc'?3:5;c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transition='transform .12s ease';c.style.transform=`perspective(800px) rotateX(${-y*mx}deg) rotateY(${x*mx}deg)`;});c.addEventListener('mouseleave',()=>{c.style.transition='transform .5s cubic-bezier(.23,1,.32,1)';c.style.transform='';});});});}
+</script>
+</body>
+</html>
